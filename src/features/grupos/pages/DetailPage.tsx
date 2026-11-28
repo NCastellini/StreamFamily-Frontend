@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/shared/components';
 import { notifySuccess } from '@/shared/utils/notify';
 import { gruposApi } from '../api';
 import { GrupoForm } from '../components/GrupoForm';
+import { Miembros } from '../components/Miembros';
 import type { Grupo, ResumenGrupo } from '../types';
 
 export function GrupoDetailPage() {
@@ -113,6 +114,7 @@ function Detalle({ id }: { id: number }) {
           <Text>Suscripciones activas: {resumen.suscripcionesActivas}</Text>
         </Stack>
       </Paper>
+      {!editando && <Miembros grupo={grupo} userId={user.id} onChange={setGrupo} />}
       <ConfirmDialog
         opened={confirmarBaja}
         title="Eliminar grupo"
