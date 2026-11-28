@@ -1,7 +1,7 @@
 # src/shared
 
-Piezas comunes para armar los listados. Componentes desde `@/shared/components`, hooks desde
-`@/shared/hooks/*` y avisos desde `@/shared/utils/notify`.
+Piezas comunes para armar listados y páginas de detalle. Componentes desde `@/shared/components`,
+hooks desde `@/shared/hooks/*` y utilidades desde `@/shared/utils/*` (`notify`, `format`, `export`).
 
 ## Hooks
 
@@ -37,12 +37,29 @@ opcional y solo para la tabla. Para la columna de acciones: `exportable: false`.
 | `Pagination`     | `page, totalPages, onChange, total?`                                                           |
 | `ExportButton`   | `entity, columns, fetchPage, disabled?`                                                        |
 | `ConfirmDialog`  | `opened, message, onConfirm, onCancel, title?, confirmLabel?, cancelLabel?, color?, loading?`  |
+| `PageHeader`     | `title, description?, actions?`                                                                |
+| `Loader`         | `label?`                                                                                       |
+| `EmptyState`     | `message, description?, action?`                                                               |
+| `ErrorMessage`   | `error, onRetry?, title?` (muestra el `msg` del back si es `ApiError`)                         |
 
 - Los botones, links y switches dentro de un `render` de `DataTable` **no** disparan `onRowClick`.
 - `ExportButton`: pasá `fetchPage={(p) => api.list({ ...params, ...p })}` para que respete búsqueda,
-  filtros y orden. Exporta hasta 100 registros a PDF o XLSX y avisa si no hay datos.
+  filtros y orden. Exporta todo lo filtrado (de a 100 por página, hasta 100 páginas) a PDF o XLSX y
+  avisa si no hay datos.
 - `ConfirmDialog`: **no captures el error en `onConfirm`**. Dejalo propagar: el diálogo lo notifica.
 - `notifyError(error, fallback?)` muestra el `msg` del back; `notifySuccess(message)` confirma.
+
+## Formatos
+
+`@/shared/utils/format`: `formatMoney(value, 'ARS' | 'USD')`, `formatDate(value)` (`DD/MM/YYYY`) y
+`formatDateTime(value)` (`DD/MM/YYYY HH:mm`). Devuelven `null` si el valor falta o es inválido, así
+se usan directo en `Column.value`.
+
+## Export
+
+`@/shared/utils/export`: `fetchAllPages(fetchPage, limit?)`, `buildExportTable(columns, rows)`,
+`exportFileName(entity, formato)`, `exportToXlsx` y `exportToPdf` (cargan xlsx y jspdf bajo
+demanda).
 
 ## Ejemplo de ListPage
 
