@@ -78,10 +78,8 @@ async function request<T>(
   const hasBody = body !== undefined;
   if (hasBody) headers['Content-Type'] = 'application/json';
 
-  if (useAuth) {
-    const token = authHandlers.getToken();
-    if (token) headers.Authorization = `Bearer ${token}`;
-  }
+  const token = useAuth ? authHandlers.getToken() : null;
+  if (token) headers.Authorization = `Bearer ${token}`;
 
   let res: Response;
   try {
@@ -106,7 +104,10 @@ async function request<T>(
   }
 
   const error = toApiError(text ? parseJson(text) : undefined, res.status);
-  if (res.status === 401 && useAuth) authHandlers.onUnauthorized();
+  // Una respuesta tardía de una sesión anterior no debe cerrar la sesión actual.
+  if (res.status === 401 && useAuth && token === authHandlers.getToken()) {
+    authHandlers.onUnauthorized();
+  }
   throw error;
 }
 

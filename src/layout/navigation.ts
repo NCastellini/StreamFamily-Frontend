@@ -13,7 +13,7 @@ export type NavItem = {
  * El back valida los permisos por su cuenta: esto solo ordena la navegación.
  */
 export const navigation: readonly NavItem[] = [
-  { label: 'Inicio', path: '/', roles: ['cliente'] },
+  { label: 'Inicio', path: '/dashboard', roles: ['cliente'] },
   { label: 'Suscripciones', path: '/suscripciones', roles: ['cliente'] },
   { label: 'Medios de pago', path: '/suscripciones/medios-pago', roles: ['cliente'] },
   { label: 'Grupos familiares', path: '/grupos', roles: ['cliente'] },
