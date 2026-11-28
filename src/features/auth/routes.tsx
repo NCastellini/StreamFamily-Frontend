@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
 import { PlaceholderPage } from '@/app/PlaceholderPage';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 
 /**
  * Rutas de la feature auth (Nazareno).
@@ -9,6 +10,6 @@ import { LoginPage } from './pages/LoginPage';
  */
 export const authRoutes: RouteObject[] = [
   { path: 'login', element: <LoginPage /> },
-  { path: 'registro', element: <PlaceholderPage title="Crear cuenta" owner="Nazareno" /> },
+  { path: 'registro', element: <RegisterPage /> },
   { path: 'recuperar', element: <PlaceholderPage title="Recuperar contraseña" owner="Nazareno" /> },
 ];
