@@ -16,6 +16,7 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConfirmDialog } from '@/shared/components';
+import { useVolverAlListado } from '@/shared/hooks/useListadoOrigen';
 import { notifyError, notifySuccess } from '@/shared/utils/notify';
 import { suscripcionesApi } from '../api';
 import { SuscripcionForm } from '../components/SuscripcionForm';
@@ -27,10 +28,11 @@ import { useOpciones } from '../useOpciones';
 export function SuscripcionDetailPage() {
   const { id } = useParams();
   const valido = id !== undefined && /^\d+$/.test(id) && Number(id) > 0;
+  const volverA = useVolverAlListado('/suscripciones');
 
   return (
     <Stack>
-      <Anchor component={Link} to="/suscripciones">
+      <Anchor component={Link} to={volverA}>
         Volver a suscripciones
       </Anchor>
       {valido ? (
@@ -56,6 +58,7 @@ function Dato({ label, children }: { label: string; children: ReactNode }) {
 function Detalle({ id }: { id: number }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const volverA = useVolverAlListado('/suscripciones');
   const { categorias, mediosPago, grupos } = useOpciones();
   const [suscripcion, setSuscripcion] = useState<Suscripcion | null>(null);
   const [error, setError] = useState('');
@@ -185,7 +188,7 @@ function Detalle({ id }: { id: number }) {
         onConfirm={async () => {
           const res = await suscripcionesApi.remove(id);
           notifySuccess(res.msg);
-          navigate('/suscripciones', { replace: true });
+          navigate(volverA, { replace: true });
         }}
       />
     </Stack>
