@@ -19,6 +19,9 @@ type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 const NETWORK_ERROR_MSG = 'No se pudo conectar con el servidor';
 
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
+if (!API_URL) console.error('Falta VITE_API_URL en el .env');
+
 let authHandlers: AuthHandlers = {
   getToken: () => null,
   onUnauthorized: () => {},
@@ -29,8 +32,7 @@ export function configureAuth(handlers: AuthHandlers): void {
 }
 
 function buildUrl(path: string, params?: object): string {
-  const base = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
-  const url = `${base}/${path.replace(/^\/+/, '')}`;
+  const url = `${API_URL}/${path.replace(/^\/+/, '')}`;
   if (!params) return url;
 
   const search = new URLSearchParams();
