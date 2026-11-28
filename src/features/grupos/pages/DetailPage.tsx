@@ -3,6 +3,7 @@ import { Alert, Anchor, Button, Group, Loader, Paper, Stack, Text, Title } from 
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConfirmDialog } from '@/shared/components';
+import { useVolverAlListado } from '@/shared/hooks/useListadoOrigen';
 import { notifySuccess } from '@/shared/utils/notify';
 import { gruposApi } from '../api';
 import { GrupoForm } from '../components/GrupoForm';
@@ -11,9 +12,10 @@ import type { Grupo, ResumenGrupo } from '../types';
 
 export function GrupoDetailPage() {
   const { id } = useParams();
+  const volverA = useVolverAlListado('/grupos');
   return (
     <Stack>
-      <Anchor component={Link} to="/grupos">
+      <Anchor component={Link} to={volverA}>
         Volver a grupos
       </Anchor>
       {id && /^\d+$/.test(id) && Number.isSafeInteger(Number(id)) && Number(id) > 0 ? (
@@ -28,6 +30,7 @@ export function GrupoDetailPage() {
 function Detalle({ id }: { id: number }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const volverA = useVolverAlListado('/grupos');
   const [grupo, setGrupo] = useState<Grupo | null>(null);
   const [resumen, setResumen] = useState<ResumenGrupo | null>(null);
   const [error, setError] = useState('');
@@ -123,7 +126,7 @@ function Detalle({ id }: { id: number }) {
         onConfirm={async () => {
           const res = await gruposApi.remove(id);
           notifySuccess(res.msg);
-          navigate('/grupos', { replace: true });
+          navigate(volverA, { replace: true });
         }}
       />
     </Stack>
