@@ -1,8 +1,9 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { NotFoundPage } from '@/app/NotFoundPage';
 import { adminRoutes } from '@/features/admin/routes';
 import { alertasRoutes } from '@/features/alertas/routes';
 import { authRoutes } from '@/features/auth/routes';
+import { GuestOnly, RequireAuth, RequireRole } from '@/features/auth/guards';
 import { dashboardRoutes } from '@/features/dashboard/routes';
 import { gruposRoutes } from '@/features/grupos/routes';
 import { pagosRoutes } from '@/features/pagos/routes';
@@ -18,17 +19,28 @@ import { AppLayout } from '@/layout/AppLayout';
  * - El resto va dentro del AppLayout (header, menú y footer).
  */
 export const router = createBrowserRouter([
-  ...authRoutes,
+  { element: <GuestOnly />, children: authRoutes },
   {
-    element: <AppLayout />,
+    element: <RequireAuth />,
     children: [
-      ...dashboardRoutes,
-      ...suscripcionesRoutes,
-      ...gruposRoutes,
-      ...pagosRoutes,
-      ...alertasRoutes,
-      ...perfilRoutes,
-      ...adminRoutes,
+      {
+        element: <AppLayout />,
+        children: [
+          ...perfilRoutes,
+          { element: <RequireRole role="admin" />, children: adminRoutes },
+          {
+            element: <RequireRole role="cliente" />,
+            children: [
+              { index: true, element: <Navigate to="/dashboard" replace /> },
+              { path: 'dashboard', children: dashboardRoutes },
+              ...suscripcionesRoutes,
+              ...gruposRoutes,
+              ...pagosRoutes,
+              ...alertasRoutes,
+            ],
+          },
+        ],
+      },
     ],
   },
   { path: '*', element: <NotFoundPage /> },

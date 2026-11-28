@@ -1,6 +1,7 @@
 import { NavLink, Stack } from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
-import { esRutaActiva, itemsParaRol, type Rol } from '@/layout/navigation';
+import { useAuth } from '@/features/auth/useAuth';
+import { esRutaActiva, itemsParaRol } from '@/layout/navigation';
 
 type SidebarProps = {
   /** Se llama al elegir un ítem (en mobile cierra el menú) */
@@ -9,9 +10,8 @@ type SidebarProps = {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const { pathname } = useLocation();
-  // TODO (Nazareno): tomar el rol de la sesión, por ejemplo useAuth().user?.role
-  const rol: Rol | null = null;
-  const items = itemsParaRol(rol);
+  const { role } = useAuth();
+  const items = itemsParaRol(role);
 
   // Si hay un ítem más específico activo (por ejemplo, medios de pago), no se marca también el padre.
   const activo = items
