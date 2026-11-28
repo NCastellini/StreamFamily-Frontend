@@ -8,4 +8,5 @@ export type Column<T> = {
   render?: (row: T) => ReactNode;
   width?: number | string;
   align?: 'left' | 'center' | 'right';
+  exportable?: boolean;
 };
