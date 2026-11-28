@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { NotFoundPage } from '@/app/NotFoundPage';
+import { RouteErrorPage } from '@/app/RouteErrorPage';
 import { adminRoutes } from '@/features/admin/routes';
 import { alertasRoutes } from '@/features/alertas/routes';
 import { authRoutes } from '@/features/auth/routes';
@@ -17,31 +18,37 @@ import { AppLayout } from '@/layout/AppLayout';
  *
  * - authRoutes: pantallas públicas, sin el layout (login, registro, recuperar).
  * - El resto va dentro del AppLayout (header, menú y footer).
+ * - errorElement: si una pantalla falla, se muestra RouteErrorPage en vez de quedar en blanco.
  */
 export const router = createBrowserRouter([
-  { element: <GuestOnly />, children: authRoutes },
   {
-    element: <RequireAuth />,
+    errorElement: <RouteErrorPage />,
     children: [
+      { element: <GuestOnly />, children: authRoutes },
       {
-        element: <AppLayout />,
+        element: <RequireAuth />,
         children: [
-          ...perfilRoutes,
-          { element: <RequireRole role="admin" />, children: adminRoutes },
           {
-            element: <RequireRole role="cliente" />,
+            element: <AppLayout />,
             children: [
-              { index: true, element: <Navigate to="/dashboard" replace /> },
-              { path: 'dashboard', children: dashboardRoutes },
-              ...suscripcionesRoutes,
-              ...gruposRoutes,
-              ...pagosRoutes,
-              ...alertasRoutes,
+              ...perfilRoutes,
+              { element: <RequireRole role="admin" />, children: adminRoutes },
+              {
+                element: <RequireRole role="cliente" />,
+                children: [
+                  { index: true, element: <Navigate to="/dashboard" replace /> },
+                  { path: 'dashboard', children: dashboardRoutes },
+                  ...suscripcionesRoutes,
+                  ...gruposRoutes,
+                  ...pagosRoutes,
+                  ...alertasRoutes,
+                ],
+              },
             ],
           },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
-  { path: '*', element: <NotFoundPage /> },
 ]);
