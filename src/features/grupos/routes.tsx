@@ -1,10 +1,10 @@
 import type { RouteObject } from 'react-router-dom';
-import { PlaceholderPage } from '@/app/PlaceholderPage';
+import { GruposListPage } from './pages/ListPage';
+import { GrupoDetailPage } from './pages/DetailPage';
+import { NuevoGrupoPage } from './pages/NewPage';
 
-/**
- * Rutas de la feature grupos (Nazareno).
- * Reemplazá los PlaceholderPage por tus páginas. No hace falta tocar el router ni el menú.
- */
 export const gruposRoutes: RouteObject[] = [
-  { path: 'grupos', element: <PlaceholderPage title="Grupos familiares" owner="Nazareno" /> },
+  { path: 'grupos', element: <GruposListPage /> },
+  { path: 'grupos/nueva', element: <NuevoGrupoPage /> },
+  { path: 'grupos/:id', element: <GrupoDetailPage /> },
 ];
