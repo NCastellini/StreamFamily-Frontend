@@ -10,6 +10,7 @@ import {
   SearchBar,
 } from '@/shared/components';
 import { useApiList } from '@/shared/hooks/useApiList';
+import { useOrigenListado } from '@/shared/hooks/useListadoOrigen';
 import { useListParams } from '@/shared/hooks/useListParams';
 import { notifyError } from '@/shared/utils/notify';
 import { suscripcionesApi } from '../api';
@@ -20,6 +21,7 @@ import { useOpciones } from '../useOpciones';
 
 export function SuscripcionesListPage() {
   const navigate = useNavigate();
+  const origen = useOrigenListado();
   const { params, setPage, setLimit, toggleSort, setSearch, setFilter } =
     useListParams<SuscripcionFilters>();
   const { data, meta, loading, error } = useApiList(suscripcionesApi.list, params);
@@ -105,7 +107,7 @@ export function SuscripcionesListPage() {
         sortBy={params.sortBy}
         order={params.order}
         onSort={toggleSort}
-        onRowClick={(s) => navigate(`/suscripciones/${s.id}`)}
+        onRowClick={(s) => navigate(`/suscripciones/${s.id}`, { state: origen })}
         emptyMessage="No hay suscripciones para mostrar"
       />
       <Pagination

@@ -10,12 +10,14 @@ import {
   SearchBar,
 } from '@/shared/components';
 import { useApiList } from '@/shared/hooks/useApiList';
+import { useOrigenListado } from '@/shared/hooks/useListadoOrigen';
 import { useListParams } from '@/shared/hooks/useListParams';
 import { gruposApi, listarParaExportar } from '../api';
 import { grupoColumns } from '../columns';
 
 export function GruposListPage() {
   const navigate = useNavigate();
+  const origen = useOrigenListado();
   const { params, setPage, setLimit, setSearch, toggleSort } = useListParams();
   const { data, meta, error, loading, reload } = useApiList(gruposApi.list, params);
   useEffect(() => {
@@ -58,7 +60,7 @@ export function GruposListPage() {
           sortBy={params.sortBy}
           order={params.order}
           onSort={toggleSort}
-          onRowClick={(grupo) => navigate(`/grupos/${grupo.id}`)}
+          onRowClick={(grupo) => navigate(`/grupos/${grupo.id}`, { state: origen })}
           emptyMessage={
             params.q
               ? 'No se encontraron grupos para esa búsqueda'
