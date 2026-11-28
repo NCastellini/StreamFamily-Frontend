@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, MouseEvent, SyntheticEvent } from 'react';
 import { Box, Group, LoadingOverlay, Skeleton, Table, Text, UnstyledButton } from '@mantine/core';
 import type { SortOrder } from '@/shared/types/api.types';
 import type { Column } from './types';
@@ -13,11 +13,20 @@ export type DataTableProps<T> = {
   onRowClick?: (row: T) => void;
   rowKey?: (row: T) => string | number;
   emptyMessage?: string;
+  minWidth?: number;
 };
 
-const ANCHO_MINIMO = 600;
 const FILAS_SKELETON = 5;
 const SIN_VALOR = '—';
+// label incluido: el track del Switch de Mantine es un span dentro de un <label>
+const SELECTOR_INTERACTIVO =
+  'button, a, input, select, textarea, label, [role="button"], [role="switch"], [role="checkbox"]';
+
+function vieneDeInteractivo(e: SyntheticEvent<HTMLElement>): boolean {
+  if (!(e.target instanceof Element)) return false;
+  const el = e.target.closest(SELECTOR_INTERACTIVO);
+  return el !== null && el !== e.currentTarget && e.currentTarget.contains(el);
+}
 
 function claveFila<T>(fila: T, indice: number): string | number {
   const id = (fila as { id?: unknown }).id;
@@ -39,6 +48,7 @@ export function DataTable<T>({
   onRowClick,
   rowKey,
   emptyMessage = 'No hay resultados',
+  minWidth = 600,
 }: DataTableProps<T>) {
   const sinData = data.length === 0;
 
@@ -92,14 +102,17 @@ export function DataTable<T>({
     );
   } else {
     filas = data.map((fila, i) => {
-      const alPresionarTecla = (e: KeyboardEvent) => {
-        if (e.key === 'Enter') onRowClick?.(fila);
+      const alHacerClic = (e: MouseEvent<HTMLTableRowElement>) => {
+        if (!vieneDeInteractivo(e)) onRowClick?.(fila);
+      };
+      const alPresionarTecla = (e: KeyboardEvent<HTMLTableRowElement>) => {
+        if (e.key === 'Enter' && !vieneDeInteractivo(e)) onRowClick?.(fila);
       };
 
       return (
         <Table.Tr
           key={rowKey ? rowKey(fila) : claveFila(fila, i)}
-          onClick={onRowClick ? () => onRowClick(fila) : undefined}
+          onClick={onRowClick ? alHacerClic : undefined}
           onKeyDown={onRowClick ? alPresionarTecla : undefined}
           tabIndex={onRowClick ? 0 : undefined}
           style={onRowClick ? { cursor: 'pointer' } : undefined}
@@ -117,7 +130,7 @@ export function DataTable<T>({
   return (
     <Box pos="relative">
       <LoadingOverlay visible={loading && !sinData} overlayProps={{ blur: 1 }} />
-      <Table.ScrollContainer minWidth={ANCHO_MINIMO}>
+      <Table.ScrollContainer minWidth={minWidth}>
         <Table striped highlightOnHover withTableBorder>
           <Table.Thead>
             <Table.Tr>{encabezados}</Table.Tr>
