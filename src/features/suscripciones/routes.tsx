@@ -1,14 +1,12 @@
 import type { RouteObject } from 'react-router-dom';
-import { PlaceholderPage } from '@/app/PlaceholderPage';
+import { SuscripcionDetailPage } from './pages/DetailPage';
+import { SuscripcionesListPage } from './pages/ListPage';
+import { MediosPagoPage } from './pages/MediosPagoPage';
+import { NuevaSuscripcionPage } from './pages/NewPage';
 
-/**
- * Rutas de la feature suscripciones (Nicolás).
- * Reemplazá los PlaceholderPage por tus páginas. No hace falta tocar el router ni el menú.
- */
 export const suscripcionesRoutes: RouteObject[] = [
-  { path: 'suscripciones', element: <PlaceholderPage title="Suscripciones" owner="Nicolás" /> },
-  {
-    path: 'suscripciones/medios-pago',
-    element: <PlaceholderPage title="Medios de pago" owner="Nicolás" />,
-  },
+  { path: 'suscripciones', element: <SuscripcionesListPage /> },
+  { path: 'suscripciones/nueva', element: <NuevaSuscripcionPage /> },
+  { path: 'suscripciones/medios-pago', element: <MediosPagoPage /> },
+  { path: 'suscripciones/:id', element: <SuscripcionDetailPage /> },
 ];
